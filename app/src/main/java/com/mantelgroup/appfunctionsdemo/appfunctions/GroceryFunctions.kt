@@ -13,6 +13,7 @@ class GroceryFunctions(
      * Adds a grocery item to the cart.
      *
      * Use this when the user wants to add, put, throw in, or place a grocery item into the cart.
+     * If the return value starts with "ITEM_NOT_FOUND" you MUST ask the user to choose from the suggestions — do NOT retry with a guessed name.
      *
      * @param itemName The name of the grocery item to add (e.g. "apples", "milk", "salmon").
      * @param quantity How many of the item to add. Defaults to 1 when the user does not give a number.
@@ -25,7 +26,7 @@ class GroceryFunctions(
         quantity: Int = 1,
     ): String {
         val item = resolveItem(itemName)
-            ?: return "Sorry, I don't recognise '$itemName'."
+            ?: return notFound(itemName)
         cartRepository.addToCart(item, quantity)
         return "Added $quantity × ${item.displayName} to the cart."
     }
@@ -47,7 +48,7 @@ class GroceryFunctions(
         quantity: Int = 1,
     ): String {
         val item = resolveItem(itemName)
-            ?: return "Sorry, I don't recognise '$itemName'"
+            ?: return notFound(itemName)
         val cartItems = cartRepository.cartItems.value
         if (!cartItems.containsKey(item)) {
             return "${item.displayName} is not in the cart."
@@ -92,6 +93,7 @@ class GroceryFunctions(
      *
      * Use this when the user wants to swap, replace, exchange, or substitute one item for another.
      * If the replacement item is already in the cart the quantities are merged.
+     * If the return value starts with "ITEM_NOT_FOUND" you MUST ask the user to choose from the suggestions — do NOT retry with a guessed name.
      *
      * @param fromItemName The name of the item currently in the cart to be replaced.
      * @param toItemName The name of the item to replace it with.
@@ -104,9 +106,9 @@ class GroceryFunctions(
         toItemName: String,
     ): String {
         val from = resolveItem(fromItemName)
-            ?: return "Sorry, I don't recognise '$fromItemName'."
+            ?: return notFound(fromItemName)
         val to = resolveItem(toItemName)
-            ?: return "Sorry, I don't recognise '$toItemName'."
+            ?: return notFound(toItemName)
         if (from == to) return "${from.displayName} is already in the cart."
         val cartItems = cartRepository.cartItems.value
         if (!cartItems.containsKey(from)) {
@@ -124,6 +126,21 @@ class GroceryFunctions(
             }
     }
 
-    private fun availableNames(): String =
-        GroceryItem.entries.joinToString(", ") { it.displayName }
+    private fun suggest(name: String): String {
+        val query = name.trim().lowercase()
+        val matches = GroceryItem.entries.filter {
+            it.name.lowercase().contains(query) ||
+            it.displayName.lowercase().contains(query)
+        }
+        return if (matches.isEmpty()) "" else
+            " Did you mean: ${matches.joinToString(", ") { it.displayName }}?"
+    }
+
+    private fun notFound(name: String): String {
+        val suggestion = suggest(name)
+        if (suggestion.isNotEmpty()) {
+            return "ITEM_NOT_FOUND: The item '$name' is not on my list. Please ASK THE USER to pick from: $suggestion — do NOT guess or retry with a different name."
+        }
+        return "ITEM_NOT_FOUND: The item '$name' is not on my list. Please tell the user it wasn't found."
+    }
 }

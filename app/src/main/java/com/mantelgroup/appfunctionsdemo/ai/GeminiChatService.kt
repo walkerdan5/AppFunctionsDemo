@@ -43,25 +43,25 @@ class GeminiChatService(
     private fun functionDeclarations(): List<FunctionDeclaration> = listOf(
         FunctionDeclaration(
             "addGroceryItem",
-            "Add a grocery item to the cart with an optional quantity.",
+            "Call this function exactly ONCE per item the user wants to add. Adds the given quantity of a grocery item to the cart (default 1). If the return value starts with 'ITEM_NOT_FOUND', ask the user to pick from the listed options — do NOT retry with a guessed name.",
             mapOf(
                 "itemName" to Schema.string("The name of the grocery item, e.g. 'apples' or 'milk'."),
-                "quantity" to Schema.integer("How many to add. Defaults to 1 if omitted."),
+                "quantity" to Schema.integer("How many to add. Defaults to 1 if omitted. Do not guess — only use a number the user explicitly said."),
             ),
             listOf("quantity"),
         ),
         FunctionDeclaration(
             "removeGroceryItem",
-            "Remove a grocery item from the cart with an optional quantity. Removes the item entirely if the quantity meets or exceeds the current amount.",
+            "Call this function exactly ONCE per item the user wants to remove. Removes the given quantity of a grocery item from the cart (default 1). Removes the item entirely if the quantity meets or exceeds the current amount. If the return value starts with 'ITEM_NOT_FOUND', ask the user to pick from the listed options — do NOT retry with a guessed name.",
             mapOf(
                 "itemName" to Schema.string("The name of the grocery item, e.g. 'apples' or 'milk'."),
-                "quantity" to Schema.integer("How many to remove. Defaults to 1 if omitted."),
+                "quantity" to Schema.integer("How many to remove. Defaults to 1 if omitted. Do not guess — only use a number the user explicitly said."),
             ),
             listOf("quantity"),
         ),
         FunctionDeclaration(
             "swapGroceryItem",
-            "Swap one item in the cart for another, keeping the same quantity. Merges quantities if the replacement is already in the cart.",
+            "Swap one item in the cart for another, keeping the same quantity. Merges quantities if the replacement is already in the cart. If the return value starts with 'ITEM_NOT_FOUND', ask the user to pick from the listed options — do NOT retry with a guessed name.",
             mapOf(
                 "fromItemName" to Schema.string("The name of the item to replace, e.g. 'salmon'."),
                 "toItemName" to Schema.string("The name of the item to replace it with, e.g. 'shrimp'."),
