@@ -47,4 +47,4 @@ To test with the agent:
 
 ## Demo
 
-[![Demo](media/demo-thumbnail.png)](media/demo-video.mp4)
+[![Demo](media/demo-thumbnail.png)](https://github.com/user-attachments/assets/08db9816-45df-4ca3-83be-dd35413477bf)
