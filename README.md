@@ -47,4 +47,4 @@ To test with the agent:
 
 ## Demo
 
-[![Demo](demo-video.png)](demo-video.mp4)
+[![Demo](media/demo-thumbnail.png)](media/demo-video.mp4)
