@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AppFunctionAppMetadata
     xmlns:appfn="http://schemas.android.com/apk/androidx.appfunctions"
-    appfn:description="This app keeps a single integer counter that the user can change.
-        Use the counter app functions to increase, decrease, reset, or read the counter
-        in response to natural-language requests." />
+    appfn:description="A grocery cart app that lets users add, remove, swap, and view items in their shopping cart." />

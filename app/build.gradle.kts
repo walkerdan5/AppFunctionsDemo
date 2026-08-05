@@ -75,7 +75,6 @@ dependencies {
 
     // AppFunctions
     implementation(libs.androidx.appfunctions)
-    implementation(libs.androidx.appfunctions.service)
     ksp(libs.androidx.appfunctions.compiler)
 
     // Firebase AI Logic (cloud Gemini + function calling)

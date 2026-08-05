@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AppFunctionsDemo</string>
+    <string name="app_function_app_description">A grocery cart app that lets users add, remove, swap, and view items in their shopping cart.</string>
+    <string name="app_function_app_display_description">Grocery Cart App</string>
 </resources>

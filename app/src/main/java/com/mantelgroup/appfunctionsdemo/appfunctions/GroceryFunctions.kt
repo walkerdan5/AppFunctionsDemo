@@ -1,7 +1,5 @@
 package com.mantelgroup.appfunctionsdemo.appfunctions
 
-import androidx.appfunctions.AppFunctionContext
-import androidx.appfunctions.service.AppFunction
 import com.mantelgroup.appfunctionsdemo.ui.CartRepository
 import com.mantelgroup.appfunctionsdemo.ui.GroceryItem
 
@@ -19,9 +17,7 @@ class GroceryFunctions(
      * @param quantity How many of the item to add. Defaults to 1 when the user does not give a number.
      * @return A short confirmation or an error if the item name is not recognised.
      */
-    @AppFunction(isDescribedByKDoc = true)
     fun addGroceryItem(
-        appFunctionContext: AppFunctionContext,
         itemName: String,
         quantity: Int = 1,
     ): String {
@@ -41,9 +37,7 @@ class GroceryFunctions(
      * @param quantity How many of the item to remove. Defaults to 1 when the user does not give a number.
      * @return A short confirmation or an error if the item name is not recognised.
      */
-    @AppFunction(isDescribedByKDoc = true)
     fun removeGroceryItem(
-        appFunctionContext: AppFunctionContext,
         itemName: String,
         quantity: Int = 1,
     ): String {
@@ -64,8 +58,7 @@ class GroceryFunctions(
      *
      * @return A short confirmation that the cart is now empty.
      */
-    @AppFunction(isDescribedByKDoc = true)
-    fun clearCart(appFunctionContext: AppFunctionContext): String {
+    fun clearCart(): String {
         cartRepository.clearCart()
         return "Cart cleared."
     }
@@ -77,8 +70,7 @@ class GroceryFunctions(
      *
      * @return A human-readable summary of cart items and the total price.
      */
-    @AppFunction(isDescribedByKDoc = true)
-    fun getCart(appFunctionContext: AppFunctionContext): String {
+    fun getCart(): String {
         val cartItems = cartRepository.cartItems.value
         if (cartItems.isEmpty()) return "The cart is empty."
         val lines = cartItems.entries.joinToString("\n") { (item, qty) ->
@@ -99,9 +91,7 @@ class GroceryFunctions(
      * @param toItemName The name of the item to replace it with.
      * @return A short confirmation or an error if either item name is not recognised.
      */
-    @AppFunction(isDescribedByKDoc = true)
     fun swapGroceryItem(
-        appFunctionContext: AppFunctionContext,
         fromItemName: String,
         toItemName: String,
     ): String {

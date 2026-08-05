@@ -27,7 +27,9 @@ class GeminiChatService(
     suspend fun sendMessage(userMessage: String): String {
         var response = chat.sendMessage(userMessage)
 
-        while (response.functionCalls.isNotEmpty()) {
+        var iterations = 0
+        while (response.functionCalls.isNotEmpty() && iterations < 3) {
+            iterations++
             val resultParts = response.functionCalls.map { call ->
                 val result = appFunctionRunner.execute(call.name, call.args)
                 FunctionResponsePart(call.name, buildJsonObject { put("result", result) })

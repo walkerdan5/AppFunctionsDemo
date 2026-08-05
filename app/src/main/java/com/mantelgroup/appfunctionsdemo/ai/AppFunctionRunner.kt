@@ -1,6 +1,7 @@
 package com.mantelgroup.appfunctionsdemo.ai
 
 import android.content.Context
+import android.util.Log
 import androidx.appfunctions.AppFunctionData
 import androidx.appfunctions.AppFunctionManager
 import androidx.appfunctions.AppFunctionSearchSpec
@@ -21,6 +22,8 @@ import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
 
+private const val TAG = "AppFunctionRunner"
+
 class AppFunctionRunner(
     private val context: Context,
 ) {
@@ -30,9 +33,14 @@ class AppFunctionRunner(
         val manager = AppFunctionManager.getInstance(context)
             ?: return "AppFunctionManager is not available on this device."
 
-        val metadata = discoverFunctions()
+        val functions = discoverFunctions()
+        Log.d(TAG, "Discovered ${functions.size} functions: ${functions.map { it.id }}")
+
+        val metadata = functions
             .firstOrNull { it.id.substringAfterLast('#') == simpleName }
             ?: return "Function '$simpleName' was not found in the registry."
+
+        Log.d(TAG, "Executing function '$simpleName' with args: $args")
 
         val request = ExecuteAppFunctionRequest(
             packageName,
@@ -40,19 +48,30 @@ class AppFunctionRunner(
             buildParameters(metadata, args),
         )
 
-        return when (val response = manager.executeAppFunction(request)) {
-            is ExecuteAppFunctionResponse.Success -> readReturnValue(metadata, response.returnValue)
-            is ExecuteAppFunctionResponse.Error -> "Error: ${response.error.errorMessage}"
+        return try {
+            when (val response = manager.executeAppFunction(request)) {
+                is ExecuteAppFunctionResponse.Success -> {
+                    val result = readReturnValue(metadata, response.returnValue)
+                    Log.d(TAG, "Function '$simpleName' returned: $result")
+                    result
+                }
+                is ExecuteAppFunctionResponse.Error -> {
+                    val error = "Error: ${response.error.errorMessage}"
+                    Log.e(TAG, "Function '$simpleName' error: $error")
+                    error
+                }
+            }
+        } catch (e: Exception) {
+            val error = "Exception: ${e.message}"
+            Log.e(TAG, "Function '$simpleName' threw: $error", e)
+            error
         }
     }
 
     private suspend fun discoverFunctions(): List<AppFunctionMetadata> {
         val manager = AppFunctionManager.getInstance(context) ?: return emptyList()
         val spec = AppFunctionSearchSpec(packageNames = setOf(packageName))
-        return manager
-            .observeAppFunctions(spec)
-            .first()
-            .flatMap { it.appFunctions }
+        return manager.searchAppFunctions(spec)
     }
 
     private fun buildParameters(metadata: AppFunctionMetadata, args: Map<String, JsonElement>): AppFunctionData {
