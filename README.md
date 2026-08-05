@@ -44,3 +44,7 @@ To test with the agent:
 - `GroceryFunctions.kt` — Plain implementation of cart operations
 - `AppFunctionRunner.kt` — Discovers and executes AppFunctions via `AppFunctionManager`
 - `AndroidManifest.xml` — Declares the AppFunction service and metadata
+
+## Demo
+
+[![Demo](demo-video.png)](demo-video.mp4)
