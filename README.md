@@ -1,6 +1,6 @@
 # AppFunctionsDemo
 
-A grocery cart Android app that demonstrates [Android AppFunctions](https://developer.android.com/guide/app-functions), enabling agent apps (like Gemini) to discover and execute app functionality without needing to open the app UI.
+A grocery cart Android app that demonstrates [Android AppFunctions](https://developer.android.com/ai/appfunctions), enabling agent apps (like Gemini) to discover and execute app functionality without needing to open the app UI.
 
 ## What It Does
 
@@ -23,10 +23,19 @@ An agent app (Gemini via Firebase AI) discovers these functions through the Andr
 3. **System discovery** — The Android system scans manifests and reads per-service XML metadata from assets, making functions discoverable via `AppFunctionManager.searchAppFunctions()`.
 4. **Agent execution** — The agent app calls `AppFunctionManager.executeAppFunction()` with the function ID and parameters, and the system routes the call to the app's service.
 
+## Testing with the AppFunctions Agent
+
+For a more realistic testing environment, you can use the official [AppFunctions Testing Agent](https://github.com/android/appfunctions#2-appfunctions-testing-agent). This agent app is designed specifically for testing AppFunctions — it discovers functions on a target device and lets you invoke them with custom parameters, making it easier to validate function behavior without relying on a chat-based agent.
+
+To test with the agent:
+1. Install the AppFunctions Testing Agent on the same device
+2. Open the agent and it will automatically discover the grocery cart's AppFunctions
+3. Select a function and provide parameters to test execution
+
 ## Setup
 
 1. Open the project in Android Studio
-2. Build and install on a device running API 33+
+2. Build and install on a device running API 37+
 3. Use the Gemini chat interface in the app to interact with the grocery cart via natural language
 
 ## Key Files
