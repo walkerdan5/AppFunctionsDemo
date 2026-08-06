@@ -21,10 +21,11 @@ import kotlinx.serialization.json.float
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
+import javax.inject.Inject
 
 private const val TAG = "AppFunctionRunner"
 
-class AppFunctionRunner @javax.inject.Inject constructor(
+class AppFunctionRunner @Inject constructor(
     @param:ApplicationContext private val context: Context,
 ) {
     private val packageName: String = context.packageName
