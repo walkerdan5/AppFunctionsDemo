@@ -1,7 +1,7 @@
 package com.mantelgroup.appfunctionsdemo.appfunctions
 
-import com.mantelgroup.appfunctionsdemo.ui.CartRepository
-import com.mantelgroup.appfunctionsdemo.ui.GroceryItem
+import com.mantelgroup.appfunctionsdemo.data.model.GroceryItem
+import com.mantelgroup.appfunctionsdemo.data.repository.CartRepository
 
 class GroceryFunctions(
     val cartRepository: CartRepository,

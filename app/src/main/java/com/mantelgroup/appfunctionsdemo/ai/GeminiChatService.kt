@@ -12,7 +12,7 @@ import com.google.firebase.ai.type.content
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
-class GeminiChatService(
+class GeminiChatService @javax.inject.Inject constructor(
     private val appFunctionRunner: AppFunctionRunner,
 ) {
     private val chat: Chat by lazy {

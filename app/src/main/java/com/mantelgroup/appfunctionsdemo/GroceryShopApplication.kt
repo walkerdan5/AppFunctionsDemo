@@ -4,11 +4,10 @@ import android.app.Application
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
-import com.mantelgroup.appfunctionsdemo.ui.CartRepository
+import dagger.hilt.android.HiltAndroidApp
 
-class CounterApplication : Application() {
-
-    val cartRepository = CartRepository()
+@HiltAndroidApp
+class GroceryShopApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()

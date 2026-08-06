@@ -29,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxDefaults
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -36,9 +37,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,8 +50,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mantelgroup.appfunctionsdemo.R
+import com.mantelgroup.appfunctionsdemo.data.model.GroceryItem
 import com.mantelgroup.appfunctionsdemo.ui.theme.AppFunctionsDemoTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +62,7 @@ import com.mantelgroup.appfunctionsdemo.ui.theme.AppFunctionsDemoTheme
 fun CartScreen(
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: CartViewModel = viewModel(),
+    viewModel: CartViewModel = hiltViewModel(),
 ) {
     val cartItems by viewModel.cartItems.collectAsStateWithLifecycle()
     var showChat by remember { mutableStateOf(false) }
@@ -106,7 +112,7 @@ fun CartScreen(
         } else {
             CartContent(
                 cartItems = cartItems,
-                onRemove = { viewModel.removeFromCart(it) },
+                onRemove = { viewModel.removeItem(it) },
                 onClear = { viewModel.clearCart() },
                 modifier = Modifier
                     .fillMaxSize()
@@ -192,17 +198,19 @@ private fun SwipeToDismissCartItem(
     quantity: Int,
     onRemove: () -> Unit,
 ) {
+
     val dismissState = rememberSwipeToDismissBoxState(
-        confirmValueChange = { value ->
-            if (value == SwipeToDismissBoxValue.EndToStart) {
-                onRemove()
-                true
-            } else {
-                false
-            }
-        },
+        SwipeToDismissBoxValue.Settled,
+        SwipeToDismissBoxDefaults.positionalThreshold
     )
 
+    val currentOnRemove by rememberUpdatedState(onRemove)
+    LaunchedEffect(dismissState.currentValue) {
+        if (dismissState.currentValue == SwipeToDismissBoxValue.EndToStart) {
+            currentOnRemove()
+        }
+    }
+    
     SwipeToDismissBox(
         state = dismissState,
         enableDismissFromStartToEnd = false,
@@ -261,7 +269,7 @@ private fun CartItemRow(
                 fontWeight = FontWeight.Medium,
             )
             Text(
-                text = "$${String.format("%.2f", item.price)} each",
+                text = stringResource(R.string.price_each_format, item.price),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -276,7 +284,7 @@ private fun CartItemRow(
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
-                text = "$${String.format("%.2f", lineTotal)}",
+                text = stringResource(R.string.price_format, lineTotal),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
@@ -344,7 +352,7 @@ private fun CartSummary(
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 Text(
-                    text = "$${String.format("%.2f", total)}",
+                    text = stringResource(R.string.price_format, total),
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,

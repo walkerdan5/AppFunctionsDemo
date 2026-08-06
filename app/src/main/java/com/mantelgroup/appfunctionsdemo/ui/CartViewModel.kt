@@ -1,25 +1,23 @@
 package com.mantelgroup.appfunctionsdemo.ui
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
-import com.mantelgroup.appfunctionsdemo.CounterApplication
-import kotlinx.coroutines.flow.SharingStarted
+import androidx.lifecycle.ViewModel
+import com.mantelgroup.appfunctionsdemo.data.model.GroceryItem
+import com.mantelgroup.appfunctionsdemo.data.repository.CartRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
 
-class CartViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val repo = (application as CounterApplication).cartRepository
+@HiltViewModel
+class CartViewModel @Inject constructor(
+    private val repo: CartRepository,
+) : ViewModel() {
 
     val cartItems: StateFlow<Map<GroceryItem, Int>> = repo.cartItems
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
 
     fun addToCart(item: GroceryItem) = repo.addToCart(item)
 
-    fun removeFromCart(item: GroceryItem) = repo.removeFromCart(item)
+    fun removeItem(item: GroceryItem) = repo.removeItem(item)
 
     fun clearCart() = repo.clearCart()
 
-    val totalItems: Int get() = repo.totalItems
 }

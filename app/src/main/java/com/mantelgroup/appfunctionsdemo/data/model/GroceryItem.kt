@@ -1,4 +1,4 @@
-package com.mantelgroup.appfunctionsdemo.ui
+package com.mantelgroup.appfunctionsdemo.data.model
 
 enum class GroceryCategory(val displayName: String) {
     PRODUCE("Produce"),

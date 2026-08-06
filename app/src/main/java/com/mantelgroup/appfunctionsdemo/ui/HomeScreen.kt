@@ -42,9 +42,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mantelgroup.appfunctionsdemo.CounterApplication
+import com.mantelgroup.appfunctionsdemo.R
+import com.mantelgroup.appfunctionsdemo.data.model.GroceryCategory
+import com.mantelgroup.appfunctionsdemo.data.model.GroceryItem
 import com.mantelgroup.appfunctionsdemo.ui.theme.AppFunctionsDemoTheme
 
 private val CARD_WIDTH = 140.dp
@@ -54,10 +57,9 @@ private val CARD_WIDTH = 140.dp
 fun HomeScreen(
     onNavigateToCart: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: CartViewModel = hiltViewModel(),
 ) {
-    val app = LocalContext.current.applicationContext as CounterApplication
-    val repo = app.cartRepository
-    val cartItems by repo.cartItems.collectAsStateWithLifecycle()
+    val cartItems by viewModel.cartItems.collectAsStateWithLifecycle()
     var showChat by remember { mutableStateOf(false) }
     val totalPrice = cartItems.entries.sumOf { (item, qty) -> item.price * qty }
 
@@ -108,7 +110,7 @@ fun HomeScreen(
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = "$${String.format("%.2f", totalPrice)}",
+                                text = stringResource(R.string.price_format, totalPrice),
                                 style = MaterialTheme.typography.labelLarge,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -141,7 +143,7 @@ fun HomeScreen(
                         CategoryRow(
                             items = categoryItems,
                             cartItems = cartItems,
-                            onAdd = { repo.addToCart(it) },
+                            onAdd = { viewModel.addToCart(it) },
                         )
                     }
                 }
@@ -259,7 +261,7 @@ private fun GroceryGridCard(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
-                        text = "$${String.format("%.2f", item.price)}",
+                        text = stringResource(R.string.price_format, item.price),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -378,7 +380,7 @@ private fun HomeScreenFullPreview() {
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(
-                                    text = "$${String.format("%.2f", sampleTotal)}",
+                                    text = stringResource(R.string.price_format, sampleTotal),
                                     style = MaterialTheme.typography.labelLarge,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onPrimaryContainer,
