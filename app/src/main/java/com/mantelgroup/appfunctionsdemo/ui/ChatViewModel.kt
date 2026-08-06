@@ -1,10 +1,10 @@
 package com.mantelgroup.appfunctionsdemo.ui
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mantelgroup.appfunctionsdemo.ai.AppFunctionRunner
 import com.mantelgroup.appfunctionsdemo.ai.GeminiChatService
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,9 +21,10 @@ data class ChatUiState(
     val isSending: Boolean = false,
 )
 
-class ChatViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val chatService = GeminiChatService(AppFunctionRunner(application))
+@HiltViewModel
+class ChatViewModel @Inject constructor(
+    private val chatService: GeminiChatService,
+) : ViewModel() {
 
     private val _state = MutableStateFlow(ChatUiState())
     val state: StateFlow<ChatUiState> = _state.asStateFlow()

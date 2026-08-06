@@ -5,7 +5,11 @@ import androidx.annotation.RequiresApi
 import androidx.appfunctions.AppFunction
 import androidx.appfunctions.AppFunctionServiceEntryPoint
 import com.mantelgroup.appfunctionsdemo.appfunctions.GroceryFunctions
-import com.mantelgroup.appfunctionsdemo.ui.CartRepository
+import com.mantelgroup.appfunctionsdemo.data.repository.CartRepository
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 
 @RequiresApi(37)
 @AppFunctionServiceEntryPoint(
@@ -14,7 +18,18 @@ import com.mantelgroup.appfunctionsdemo.ui.CartRepository
 )
 abstract class GroceryDemoAppFunctionServiceBase : AppFunctionService() {
 
-    private val cartRepository: CartRepository by lazy { (application as CounterApplication).cartRepository }
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface CartRepositoryEntryPoint {
+        fun cartRepository(): CartRepository
+    }
+
+    private val cartRepository: CartRepository by lazy {
+        EntryPointAccessors.fromApplication(
+            applicationContext,
+            CartRepositoryEntryPoint::class.java
+        ).cartRepository()
+    }
 
     private val groceryFunctions by lazy { GroceryFunctions(cartRepository) }
 

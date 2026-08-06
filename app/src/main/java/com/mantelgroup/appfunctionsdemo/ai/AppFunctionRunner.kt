@@ -13,7 +13,7 @@ import androidx.appfunctions.metadata.AppFunctionFloatTypeMetadata
 import androidx.appfunctions.metadata.AppFunctionIntTypeMetadata
 import androidx.appfunctions.metadata.AppFunctionLongTypeMetadata
 import androidx.appfunctions.metadata.AppFunctionMetadata
-import kotlinx.coroutines.flow.first
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.double
@@ -24,8 +24,8 @@ import kotlinx.serialization.json.long
 
 private const val TAG = "AppFunctionRunner"
 
-class AppFunctionRunner(
-    private val context: Context,
+class AppFunctionRunner @javax.inject.Inject constructor(
+    @param:ApplicationContext private val context: Context,
 ) {
     private val packageName: String = context.packageName
 
